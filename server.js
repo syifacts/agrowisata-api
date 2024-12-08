@@ -1,12 +1,14 @@
 const Hapi = require('@hapi/hapi');
 const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config();  // Load environment variables from .env file
 const agrowisataRoutes = require('./routes/routes');
 
-// Koneksi MongoDB
+// MongoDB connection
 const startMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -15,35 +17,31 @@ const startMongoDB = async () => {
   }
 };
 
-// Membuat server Hapi
+// Create Hapi server
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 3000, // Use the port provided by Heroku
+    port: process.env.PORT || 3000,  // Use PORT from .env or default to 3000
+    host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['*'], // Allow all origins or specify your frontend URL
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      }
-    }
+        origin: ['*'],  // Allow all origins or specify your allowed origins
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Define methods as an array
+      },
+    },
   });
 
-  // Menggunakan rute dari file terpisah
+  // Use routes from a separate file
   server.route(agrowisataRoutes);
 
-  // Jalankan server
-  try {
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
-  } catch (err) {
-    console.error('Error starting server:', err);
-    process.exit(1);
-  }
+  // Start the server
+  await server.start();
+  console.log('Server running on %s', server.info.uri);
 };
 
-// Menjalankan koneksi MongoDB dan server
+// Run MongoDB connection and server
 startMongoDB().then(() => {
-  init();
-}).catch(err => {
-  console.error('Error starting application:', err);
-  process.exit(1);
+  init().catch(err => {
+    console.error('Server initialization error:', err);
+    process.exit(1);
+  });
 });
