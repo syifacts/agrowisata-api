@@ -1,14 +1,12 @@
 const Hapi = require('@hapi/hapi');
 const mongoose = require('mongoose');
-require('dotenv').config();  // Memuat variabel lingkungan dari file .env
+require('dotenv').config();
 const agrowisataRoutes = require('./routes/routes');
 
 // Koneksi MongoDB
 const startMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    await mongoose.connect(process.env.MONGO_URI, {
     });
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -20,8 +18,14 @@ const startMongoDB = async () => {
 // Membuat server Hapi
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 3000,  // Menggunakan PORT dari .env atau 3000 default
-    host: '0.0.0.0',
+    port: process.env.PORT || 3000,
+    host: 'localhost',
+    routes: {
+      cors: {
+        origin: ['http://localhost:4000'],  // Tambahkan URL asal (frontend) Anda
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      }
+    }
   });
 
   // Menggunakan rute dari file terpisah
