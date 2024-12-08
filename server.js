@@ -6,7 +6,7 @@ const agrowisataRoutes = require('./routes/routes');
 // Koneksi MongoDB
 const startMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -21,7 +21,7 @@ const startMongoDB = async () => {
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,  // Menggunakan PORT dari .env atau 3000 default
-    host: 'localhost',
+    host: '0.0.0.0',
   });
 
   // Menggunakan rute dari file terpisah
