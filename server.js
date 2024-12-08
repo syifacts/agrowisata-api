@@ -19,7 +19,7 @@ const startMongoDB = async () => {
 // Membuat server Hapi
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 3028,
+    port: process.env.PORT || 3000,
     host: 'localhost',
   });
 
