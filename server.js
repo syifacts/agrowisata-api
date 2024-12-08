@@ -18,11 +18,10 @@ const startMongoDB = async () => {
 // Membuat server Hapi
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 3000,
-    host: 'localhost',
+    port: process.env.PORT || 3000, // Use the port provided by Heroku
     routes: {
       cors: {
-        origin: ['http://localhost:4000'],  // Tambahkan URL asal (frontend) Anda
+        origin: ['*'], // Allow all origins or specify your frontend URL
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
       }
     }
@@ -32,11 +31,19 @@ const init = async () => {
   server.route(agrowisataRoutes);
 
   // Jalankan server
-  await server.start();
-  console.log('Server running on %s', server.info.uri);
+  try {
+    await server.start();
+    console.log('Server running on %s', server.info.uri);
+  } catch (err) {
+    console.error('Error starting server:', err);
+    process.exit(1);
+  }
 };
 
 // Menjalankan koneksi MongoDB dan server
 startMongoDB().then(() => {
   init();
+}).catch(err => {
+  console.error('Error starting application:', err);
+  process.exit(1);
 });
