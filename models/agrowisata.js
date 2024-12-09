@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 const agrowisataSchema = new mongoose.Schema({
+  id: String,
   name: String,
   location: String,
   urlimg: String,
