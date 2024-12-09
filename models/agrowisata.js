@@ -1,8 +1,8 @@
-// models/agrowisata.js
+const { nanoid } = require('nanoid');
 const mongoose = require('mongoose');
 
 const agrowisataSchema = new mongoose.Schema({
-  id: String,
+  id: { type: String, default: () => nanoid(), unique: true },
   name: String,
   location: String,
   urlimg: String,
